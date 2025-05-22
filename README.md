@@ -72,6 +72,5 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 - Ana Júlia Real Costa
 - Gabriela dos Reis Barreto
 - Lucas Diniz Fabbri
-- Andre Luis de Oliveira
 
 Universidade Presbiteriana Mackenzie – 2025
