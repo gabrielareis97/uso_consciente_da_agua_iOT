@@ -53,15 +53,6 @@ Este sistema é composto por um microcontrolador ESP8266 (NodeMCU), sensores, at
 
 ---
 
-## 🖨️ Peças Impressas em 3D (Opcional)
-
-Caso deseje, é possível projetar:
-
-- 🔹 **Caixa para acomodar o NodeMCU, relé e fonte.**
-- 🔹 Suporte para o sensor de fluxo na tubulação.
-- 🔹 Painel frontal para o display LCD.
-
----
 
 ## 📐 Dimensões Sugeridas
 
@@ -70,7 +61,7 @@ Caso deseje, é possível projetar:
 | NodeMCU             | 60mm x 30mm                     |
 | Módulo Relé         | 50mm x 25mm                     |
 | Display LCD         | 80mm x 36mm                     |
-| Caixa Eletrônica    | 120mm x 90mm x 60mm (sugestão)  |
+| Caixa Eletrônica    | 120mm x 90mm x 60mm             |
 | Sensor de Fluxo     | 60mm x 35mm                     |
 
 ---
