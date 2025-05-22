@@ -47,9 +47,10 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 
 ## 🖼️ Imagens
 
-- Esquema de montagem (`imagens/esquema_fritzing.png`)
-- Protótipo montado (`imagens/foto_prototipo.png`)
-- Fluxograma de funcionamento (`imagens/fluxograma.png`)
+![Esquema de Montagem](imagens/esquema_fritzing.png)
+![Protótipo Montado](imagens/foto_prototipo.png)
+![Fluxograma de Funcionamento](imagens/fluxograma.png)
+
 
 ---
 
