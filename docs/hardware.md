@@ -76,14 +76,8 @@ Caso deseje, é possível projetar:
 ---
 
 ## 📸 Foto do Protótipo Montado  
-*(Se disponível)*
 
 ![Protótipo](../imagens/foto_prototipo.png)
 
 ---
 
-## 🔗 Observações
-
-- Na simulação via Wokwi, a válvula é representada por um LED.
-- No hardware real, a eletroválvula requer uma fonte externa de 12V.
-- O relé deve ser dimensionado para suportar a corrente da válvula.
