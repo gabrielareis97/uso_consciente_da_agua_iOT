@@ -1,163 +1,192 @@
-
-// Inclui bibliotecas necessárias
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
+#include <Ticker.h>
 
-// Define os pinos
-#define FLOW_SENSOR_PIN D5
-#define RELAY_PIN D4
-
-// Configurações da rede Wi-Fi
+// ==========================
+// Configurações Wi-Fi
+// ==========================
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 
-// Configurações do broker MQTT
+// ==========================
+// Configurações MQTT
+// ==========================
 const char* mqtt_server = "broker.hivemq.com";
+const char* mqtt_topic_pub = "chuveiro/consumo";
+const char* mqtt_topic_sub = "chuveiro/comando";
+const char* mqtt_topic_alerta = "chuveiro/alerta";
 
-// Tópicos MQTT
-const char* topic_fluxo = "agua/fluxo";
-const char* topic_litros = "agua/litros";
-const char* topic_comando = "agua/comando";
+// ==========================
+// Pinos
+// ==========================
+const int ledPin = 2;  // LED interno do ESP32 (GPIO2 no Wokwi)
 
-// Objetos Wi-Fi e MQTT
+// ==========================
+// Variáveis de controle
+// ==========================
+float consumo = 0.0;
+bool valvulaAberta = true;
+unsigned long tempoLigado = 0; // em segundos
+
+// ==========================
+// Instâncias
+// ==========================
 WiFiClient espClient;
 PubSubClient client(espClient);
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+Ticker timer;
 
-// Variáveis do sensor de fluxo e controle de tempo
-volatile int pulseCount = 0;
-float flowRate = 0.0;
-float totalLiters = 0.0;
-unsigned long startTime = 0;
-bool showerRunning = false;
-
-// Função chamada a cada pulso do sensor
-void IRAM_ATTR pulseCounter() {
-  pulseCount++;
-}
-
-// Conecta ao Wi-Fi
-void setup_wifi() {
-  WiFi.begin(ssid, password);
-  lcd.setCursor(0, 0);
-  lcd.print("Conectando Wi-Fi");
-
+// ==========================
+// Conectar Wi-Fi
+// ==========================
+void conectaWiFi() {
+  Serial.print("Conectando no Wi-Fi");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    WiFi.begin(ssid, password);
+    int tentativas = 0;
+    while (WiFi.status() != WL_CONNECTED && tentativas < 10) {
+      digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500);
+      Serial.print(".");
+      tentativas++;
+    }
+
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("\n❌ Falha na conexão. Tentando novamente...");
+    }
   }
 
-  Serial.println("\nWi-Fi conectado!");
-  lcd.clear();
-  lcd.print("Wi-Fi conectado");
-  delay(1000);
-  lcd.clear();
+  Serial.println("\n✅ Wi-Fi conectado!");
+  Serial.println(WiFi.localIP());
+  // Acende LED fixo por 2 segundos
+  digitalWrite(ledPin, HIGH);
+  delay(2000);
+  digitalWrite(ledPin, LOW);
 }
 
-// Reconecta ao broker MQTT se cair a conexão
+// ==========================
+// Callback MQTT
+// ==========================
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("📩 Mensagem recebida no tópico: ");
+  Serial.println(topic);
+
+  String comando = "";
+
+  for (unsigned int i = 0; i < length; i++) {
+    comando += (char)payload[i];
+  }
+
+  Serial.print("👉 Comando: ");
+  Serial.println(comando);
+
+  if (comando == "FECHAR") {
+    valvulaAberta = false;
+    tempoLigado = 0;
+    digitalWrite(ledPin, LOW);
+    Serial.println("✅ Válvula FECHADA manualmente.");
+  } else if (comando == "ABRIR") {
+    valvulaAberta = true;
+    tempoLigado = 0;
+    digitalWrite(ledPin, LOW);
+    Serial.println("✅ Válvula ABERTA manualmente.");
+  } else {
+    Serial.println("⚠️ Comando desconhecido.");
+  }
+}
+
+// ==========================
+// Reconectar MQTT
+// ==========================
 void reconnect() {
   while (!client.connected()) {
-    Serial.print("Conectando ao MQTT...");
-    if (client.connect("ESP8266Client")) {
-      Serial.println("Conectado!");
-      client.subscribe(topic_comando);
+    Serial.print("Tentando conexão MQTT...");
+    if (client.connect("ESP32Chuveiro")) {
+      Serial.println("✅ Conectado!");
+      client.subscribe(mqtt_topic_sub);
     } else {
-      Serial.print("Falhou. rc=");
+      Serial.print("❌ Falhou, rc=");
       Serial.print(client.state());
-      Serial.println(" tentando novamente...");
+      Serial.println(" tentando novamente em 5 segundos");
       delay(5000);
     }
   }
 }
 
-// Callback: recebe mensagens MQTT
-void callback(char* topic, byte* payload, unsigned int length) {
-  String message = "";
-  for (int i = 0; i < length; i++) {
-    message += (char)payload[i];
-  }
+// ==========================
+// Função chamada pelo Timer
+// ==========================
+void enviaConsumo() {
+  if (valvulaAberta) {
+    tempoLigado += 10;
 
-  Serial.print("Comando recebido: ");
-  Serial.println(message);
+    consumo += 0.5;
+    String mensagem = String(consumo);
+    client.publish(mqtt_topic_pub, mensagem.c_str());
+    Serial.print("💧 Consumo publicado: ");
+    Serial.println(mensagem);
 
-  if (message == "desligar") {
-    digitalWrite(RELAY_PIN, HIGH);
-    Serial.println("Água desligada via MQTT.");
-  } else if (message == "ligar") {
-    digitalWrite(RELAY_PIN, LOW);
-    Serial.println("Água ligada via MQTT.");
+    // Pisca LED rapidamente uma vez (simulando envio)
+    digitalWrite(ledPin, HIGH);
+    delay(200);
+    digitalWrite(ledPin, LOW);
+
+    // ALERTA aos 5 minutos (300s)
+    if (tempoLigado == 300) {
+      Serial.println("⚠️ ALERTA: 5 minutos de uso!");
+      client.publish(mqtt_topic_alerta, "ALERTA: 5 minutos de uso do chuveiro!");
+      digitalWrite(ledPin, HIGH); // LED aceso fixo no alerta
+    }
+
+    // DESLIGAR aos 10 minutos (600s)
+    if (tempoLigado >= 600) {
+      valvulaAberta = false;
+      Serial.println("🚫 Chuveiro desligado automaticamente após 10 minutos.");
+      client.publish(mqtt_topic_alerta, "Chuveiro desligado automaticamente após 10 minutos.");
+      piscarLedRapido();
+      digitalWrite(ledPin, LOW);
+    }
+  } else {
+    Serial.println("🚫 Válvula fechada. Sem consumo.");
   }
 }
 
-// Configurações iniciais
+// ==========================
+// Função piscar rápido ao desligar
+// ==========================
+void piscarLedRapido() {
+  for (int i = 0; i < 6; i++) {
+    digitalWrite(ledPin, HIGH);
+    delay(150);
+    digitalWrite(ledPin, LOW);
+    delay(150);
+  }
+}
+
+// ==========================
+// Setup
+// ==========================
 void setup() {
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
+
   Serial.begin(115200);
-  pinMode(FLOW_SENSOR_PIN, INPUT_PULLUP);
-  pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, LOW);
-
-  attachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN), pulseCounter, FALLING);
-
-  lcd.init();
-  lcd.backlight();
-
-  setup_wifi();
+  conectaWiFi();
 
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  reconnect();
+  // Inicia timer a cada 10 segundos
+  timer.attach(10, enviaConsumo);
 }
 
+// ==========================
 // Loop principal
+// ==========================
 void loop() {
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
-
-  static unsigned long lastMillis = 0;
-  if (millis() - lastMillis >= 1000) {
-    lastMillis = millis();
-
-    flowRate = pulseCount / 7.5;
-    float litersPerSecond = flowRate / 60.0;
-    totalLiters += litersPerSecond;
-    pulseCount = 0;
-
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Fluxo: ");
-    lcd.print(flowRate, 1);
-    lcd.print(" L/m");
-
-    lcd.setCursor(0, 1);
-    lcd.print("Total: ");
-    lcd.print(totalLiters, 1);
-    lcd.print(" L");
-
-    client.publish(topic_fluxo, String(flowRate, 1).c_str());
-    client.publish(topic_litros, String(totalLiters, 1).c_str());
-
-    if (flowRate > 0 && !showerRunning) {
-      startTime = millis();
-      showerRunning = true;
-    }
-
-    if (flowRate == 0 && showerRunning) {
-      showerRunning = false;
-      Serial.println("Banho encerrado.");
-      totalLiters = 0.0;
-    }
-
-    if (showerRunning && millis() - startTime >= 10 * 60 * 1000) {
-      digitalWrite(RELAY_PIN, HIGH);
-      client.publish(topic_comando, "desligado");
-      Serial.println("Tempo limite! Água desligada.");
-      delay(5000);
-      digitalWrite(RELAY_PIN, LOW);
-    }
-  }
 }
