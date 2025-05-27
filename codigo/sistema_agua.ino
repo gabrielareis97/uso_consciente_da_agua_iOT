@@ -1,36 +1,21 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <Ticker.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// ==========================
-// Configurações Wi-Fi
-// ==========================
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
-
-// ==========================
-// Configurações MQTT
-// ==========================
 const char* mqtt_server = "broker.hivemq.com";
 const char* mqtt_topic_pub = "chuveiro/consumo";
 const char* mqtt_topic_sub = "chuveiro/comando";
 const char* mqtt_topic_alerta = "chuveiro/alerta";
-
-// ==========================
-// Pinos
-// ==========================
 const int ledPin = 2;  // LED interno do ESP32 (GPIO2 no Wokwi)
 
-// ==========================
-// Variáveis de controle
-// ==========================
 float consumo = 0.0;
 bool valvulaAberta = true;
 unsigned long tempoLigado = 0; // em segundos
 
-// ==========================
-// Instâncias
-// ==========================
 WiFiClient espClient;
 PubSubClient client(espClient);
 Ticker timer;
@@ -126,6 +111,12 @@ void enviaConsumo() {
     client.publish(mqtt_topic_pub, mensagem.c_str());
     Serial.print("💧 Consumo publicado: ");
     Serial.println(mensagem);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Consumo:");
+    lcd.setCursor(0, 1);
+    lcd.print(consumo);
+    lcd.print(" L");
 
     // Pisca LED rapidamente uma vez (simulando envio)
     digitalWrite(ledPin, HIGH);
@@ -179,6 +170,10 @@ void setup() {
 
   // Inicia timer a cada 10 segundos
   timer.attach(10, enviaConsumo);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Chuveiro pronto");
 }
 
 // ==========================
