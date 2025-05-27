@@ -1,32 +1,30 @@
 # 💧 Código do Sistema - Controle Inteligente de Consumo de Água
 
-Este arquivo contém o código-fonte do sistema desenvolvido em C++ utilizando a IDE Arduino para o microcontrolador NodeMCU ESP8266.
+Este arquivo contém o código-fonte do sistema desenvolvido em C++ utilizando a IDE Arduino para o microcontrolador **ESP32** (adaptado do NodeMCU ESP8266).
 
 ## ▶️ Funcionalidades:
 
-- Leitura do fluxo de água em L/min.
-- Contagem do volume total em litros.
-- Monitoramento do tempo de banho.
-- Desligamento automático da válvula após 10 minutos de banho.
+- Simulação do consumo de água em litros (incremento a cada 10 segundos).
+- Monitoramento do tempo de banho em segundos.
+- Desligamento automático da válvula após 10 minutos de uso contínuo.
+- Emissão de alerta aos 5 minutos de uso.
 - Comunicação MQTT:
-  - Publicação dos dados (`agua/fluxo`, `agua/litros`).
-  - Recebimento de comandos (`agua/comando` → `ligar` ou `desligar`).
+  - Publicação do volume total consumido no tópico `chuveiro/consumo`.
+  - Publicação de alertas no tópico `chuveiro/alerta`.
+  - Recebimento de comandos no tópico `chuveiro/comando` para abrir ou fechar a válvula.
 
 ## 📚 Bibliotecas utilizadas:
 
-- `Wire.h` – comunicação I2C
-- `LiquidCrystal_I2C.h` – controle do display LCD
-- `ESP8266WiFi.h` – conexão Wi-Fi
+- `WiFi.h` – conexão Wi-Fi (ESP32)
 - `PubSubClient.h` – comunicação MQTT
+- `Ticker.h` – temporizador para envio periódico dos dados
 
 ## 📡 Tópicos MQTT:
 
-- `agua/fluxo` → publica vazão em L/min
-- `agua/litros` → publica volume total acumulado
-- `agua/comando` → recebe comandos: `ligar` ou `desligar`
+| Tópico               | Descrição                                      |
+|----------------------|------------------------------------------------|
+| `chuveiro/consumo`   | Publica o volume total consumido (litros)      |
+| `chuveiro/alerta`    | Publica alertas de tempo de uso do chuveiro    |
+| `chuveiro/comando`   | Recebe comandos para abrir (`ABRIR`) ou fechar (`FECHAR`) a válvula |
 
 ---
-
-Para executar este código, configure seu `ssid`, `password` e `mqtt_server` nas variáveis do código.
-
-
