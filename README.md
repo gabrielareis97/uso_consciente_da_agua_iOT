@@ -28,7 +28,7 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 
 | Publicações         | Descrição                        |
 |---------------------|----------------------------------|
-| `chuveiro/comando`        | Vazão em L/min              
+| `chuveiro/consumo`        | Vazão em L/min              
 | `chuveiro/alerta`       | Emite alerta aos 5min de uso  |
 
 | Assinatura          | Comando                          |
