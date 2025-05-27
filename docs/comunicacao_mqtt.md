@@ -1,8 +1,8 @@
 ## 🛰️ Protocolos Utilizados
 
-* **TCP/IP:** Protocolo de comunicação utilizado para conexão à rede Wi-Fi, permitindo que o NodeMCU se comunique com servidores externos, como o broker MQTT na nuvem.
+- **TCP/IP:** Protocolo de comunicação utilizado para conexão à rede Wi-Fi, permitindo que o ESP32 se comunique com servidores externos, como o broker MQTT na nuvem.
 
-* **MQTT:** Protocolo leve baseado em publicador/assinante, ideal para aplicações IoT. Ele permite a troca eficiente de mensagens entre o dispositivo (NodeMCU) e o broker, tanto para envio de dados quanto para recebimento de comandos.
+- **MQTT:** Protocolo leve baseado no modelo publicador/assinante, ideal para aplicações IoT. Permite troca eficiente de mensagens entre o dispositivo (ESP32) e o broker, tanto para envio de dados quanto para recebimento de comandos.
 
 ---
 
@@ -10,51 +10,50 @@
 
 ### 🔹 Tópicos Publicados:
 
-* `agua/fluxo`
-  ➡️ Publica a vazão instantânea da água, medida em litros por minuto (L/min).
+- `chuveiro/consumo` ➡️ Publica o volume total de água consumido (em litros), atualizado a cada 10 segundos.
 
-* `agua/litros`
-  ➡️ Publica o volume total de água consumido, em litros (L).
+- `chuveiro/alerta` ➡️ Publica alertas sobre o tempo de uso do chuveiro, como aviso aos 5 minutos e desligamento automático aos 10 minutos.
 
 ### 🔸 Tópico Assinado:
 
-* `agua/comando`
-  ➡️ Recebe comandos MQTT para controle da válvula de água. Os comandos aceitos são:
-
-  * **`ligar`** → Aciona o relé, abrindo a válvula e permitindo a passagem da água.
-  * **`desligar`** → Aciona o relé para fechar a válvula, interrompendo o fluxo de água.
+- `chuveiro/comando` ➡️ Recebe comandos MQTT para controle da válvula de água.  
+  Comandos aceitos:  
+  - `"ABRIR"` → Aciona o relé, abrindo a válvula e permitindo a passagem da água.  
+  - `"FECHAR"` → Aciona o relé para fechar a válvula, interrompendo o fluxo de água.
 
 ---
 
 ## 🔄 Funcionamento da Comunicação com o Broker MQTT
 
-1. O NodeMCU ESP8266 conecta-se à rede Wi-Fi utilizando TCP/IP.
-2. Estabelece conexão com um broker MQTT na nuvem (Eclipse Mosquitto ou outro).
-3. **Publica**, a cada segundo:
+1. O ESP32 conecta-se à rede Wi-Fi utilizando TCP/IP.
 
-   * A vazão de água em `agua/fluxo`.
-   * O volume total acumulado em `agua/litros`.
-4. **Assina** o tópico `agua/comando` para receber comandos externos que controlam a eletroválvula (abrir/fechar o fluxo de água).
-5. Se o tempo de banho ultrapassar o limite (10 minutos):
+2. Estabelece conexão com um broker MQTT público (ex: `broker.hivemq.com`).
 
-   * O sistema aciona o relé para fechar a válvula.
-   * Publica uma notificação no MQTT.
-6. Todo o sistema funciona em tempo real, permitindo monitoramento e controle remoto via qualquer cliente MQTT (como MQTT.fx, dashboards, ou aplicativos personalizados).
+3. Publica, a cada 10 segundos:  
+   - O volume total consumido no tópico `chuveiro/consumo`.
+
+4. Assina o tópico `chuveiro/comando` para receber comandos externos que controlam a eletroválvula (abrir/fechar o fluxo de água).
+
+5. Se o tempo de banho ultrapassar o limite de 10 minutos:  
+   - O sistema aciona o relé para fechar a válvula automaticamente.  
+   - Publica uma notificação de desligamento no tópico `chuveiro/alerta`.
+
+6. Aos 5 minutos, o sistema envia um alerta no tópico `chuveiro/alerta` para aviso de tempo de uso.
+
+Todo o sistema funciona em tempo real, permitindo monitoramento e controle remoto via qualquer cliente MQTT (como MQTT.fx, Node-RED, dashboards ou aplicativos personalizados).
 
 ---
 
-# 🌐 Comunicação via Internet (TCP/IP) e MQTT
+## 🌐 Comunicação via Internet (TCP/IP) e MQTT
 
 ### 🚀 Como funciona:
 
-* O sistema conecta-se à internet via **Wi-Fi (TCP/IP)**.
-* Utiliza o protocolo **MQTT** para comunicação com um broker na nuvem.
-* Permite:
+- O sistema conecta-se à internet via Wi-Fi (TCP/IP).
 
-  * **Envio de dados:** vazão e volume de água em tempo real.
-  * **Recebimento de comandos:** para controle da válvula remotamente.
-* Essa comunicação garante que os usuários possam monitorar o consumo de água, receber alertas e controlar o sistema de qualquer lugar com acesso à internet.
+- Utiliza o protocolo MQTT para comunicação com um broker na nuvem.
 
----
+- Permite:  
+  - **Envio de dados:** volume total de água consumido e alertas de uso em tempo real.  
+  - **Recebimento de comandos:** controle remoto da válvula de água.
 
-
+Essa comunicação garante que os usuários possam monitorar o consumo de água, receber alertas e controlar o sistema de qualquer lugar com acesso à internet.
