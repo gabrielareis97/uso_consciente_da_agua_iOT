@@ -23,7 +23,7 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 
 ## 🔌 Esquema de Montagem
 
-![Esquema Fritzing](../imagens/esquema_fritzing.png)  MUDAR PARA IMAGEM NOVA 
+![image](https://github.com/user-attachments/assets/0b984a1f-a5fd-4fa8-8f6d-26793473407e)
 
 ---
 
@@ -39,14 +39,15 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 ![Relé](../imagens/rele.png)
 
 ---
+### ⚡ESP32 DevKitC
+![image](https://github.com/user-attachments/assets/13dc8881-cd96-40e4-b5fe-1f5cad5c6511)
 
-### 💧 Eletroválvula 12V  
-![Eletroválvula](../imagens/eletrovalvula.png)
 
 ---
 
-### 🖥️ Display LCD 16x2 (I2C)  
-![LCD](../imagens/lcd.png)
+### 🖥️ Display LCD 16x2
+![image](https://github.com/user-attachments/assets/71751188-392b-4a78-85d1-a7a81d030ceb)
+
 
 ---
 
@@ -67,7 +68,8 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 
 ## 📸 Foto do Protótipo Montado  
 
-![Protótipo](../imagens/foto_prototipo.png) ATUALIZAR IMAGEM AQUI 
+![image](https://github.com/user-attachments/assets/07b7070c-1df3-4429-b81b-22164061e58e)
+
 
 ---
 
