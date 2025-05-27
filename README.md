@@ -1,6 +1,6 @@
 # 💧 Projeto Uso Consciente da Água
 
-Sistema inteligente para controle de consumo de água no chuveiro, baseado em IoT. Mede a vazão, conta o tempo e desliga automaticamente após 10 minutos. Os dados são enviados via MQTT para um broker na nuvem.
+Sistema inteligente para controle de consumo de água no chuveiro, baseado em IoT. Mede a vazão, conta o tempo, emite um alerta aos 5 minutos e desliga automaticamente após 10 minutos. Os dados são enviados via MQTT para um broker na nuvem.
 
 ---
 
