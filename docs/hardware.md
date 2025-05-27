@@ -2,39 +2,36 @@
 
 ## 💡 Descrição Geral
 
-Este sistema é composto por um microcontrolador ESP8266 (NodeMCU), sensores, atuadores e uma interface de usuário via display LCD. Seu objetivo é monitorar o consumo de água no chuveiro e realizar o controle automático do tempo de uso, além de fornecer dados via internet utilizando MQTT.
+Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo relé responsável por acionar uma eletroválvula 12V e um display LCD 16x2 (I2C) que serve como interface visual. O objetivo principal do projeto é controlar o tempo de uso da água no chuveiro, promovendo economia e conscientização no consumo. O usuário pode abrir ou fechar o chuveiro manualmente via MQTT, enviando comandos remotos. Além disso, o sistema realiza o monitoramento automático do tempo de uso, gerando alertas e desligando o chuveiro automaticamente se o tempo máximo for atingido.
 
 ---
 
 ## 🧰 Componentes Utilizados
 
-| Componente               | Função                                   | Observações                        |
-|--------------------------|------------------------------------------|-------------------------------------|
-| ESP8266 NodeMCU          | Microcontrolador principal               | Conexão Wi-Fi e controle geral     |
-| Sensor de Fluxo YF-S201  | Medição da vazão de água                 | Conectado no pino D5               |
-| Módulo Relé 5V           | Acionamento da eletroválvula             | Conectado no pino D4               |
-| Eletroválvula 12V        | Controla o fluxo de água                 | Abre/fecha a passagem da água      |
-| Display LCD 16x2 (I2C)   | Interface visual para exibir dados       | Endereço I2C: 0x27                 |
-| LED (Simulado no Wokwi)  | Representa o relé na simulação           | Opcional na simulação              |
-| Fonte 12V                | Alimentação da eletroválvula             | Necessária no hardware físico      |
+| Componente                     | Função                                     | Observações                                             |
+|---------------------------------|--------------------------------------------|---------------------------------------------------------|
+| **ESP32 DevKit V4**             | Microcontrolador principal                 | Conexão Wi-Fi, controle do relé, botão e display LCD    |
+| **Push Button (Botão)**         | Entrada de comando manual                  | Conectado no pino GPIO  |
+| **Módulo Relé 5V**              | Acionamento da eletroválvula               | Conectado no pino GPIO 2                   |
+| **Eletroválvula 12V**           | Controla o fluxo de água                   | Abre/fecha a passagem da água (acionada via relé)      |
+| **Display LCD 16x2 (I2C)**      | Interface visual para exibir dados         | SDA (GPIO 21) e SCL (GPIO 22) – Endereço I2C: 0x27      |
+| **Fonte 12V**                   | Alimentação da eletroválvula               | Necessária no hardware físico                           |
+| **Monitor Serial (Wokwi)**      | Debug e visualização de dados na simulação | Comunicação via porta serial (TX/RX)                    |
+
 
 ---
 
 ## 🔌 Esquema de Montagem
 
-![Esquema Fritzing](../imagens/esquema_fritzing.png)
+![Esquema Fritzing](../imagens/esquema_fritzing.png)  MUDAR PARA IMAGEM NOVA 
 
 ---
 
 ## 🧩 Visão dos Componentes
 
-### 🟦 NodeMCU ESP8266  
-![ESP8266](../imagens/esp8266.png)
+🟦 ESP32 DevKit V4 ADICIONAR AQUI IMAGEM 
 
----
-
-### 🚰 Sensor de Fluxo YF-S201  
-![Sensor de Fluxo](../imagens/sensor_fluxo.png)
+🔘 Push Button (Botão) ADICIONAR AQUI IMAGEM 
 
 ---
 
@@ -56,19 +53,21 @@ Este sistema é composto por um microcontrolador ESP8266 (NodeMCU), sensores, at
 
 ## 📐 Dimensões Sugeridas
 
-| Componente          | Dimensões Aproximadas           |
-|---------------------|----------------------------------|
-| NodeMCU             | 60mm x 30mm                     |
-| Módulo Relé         | 50mm x 25mm                     |
-| Display LCD         | 80mm x 36mm                     |
-| Caixa Eletrônica    | 120mm x 90mm x 60mm             |
-| Sensor de Fluxo     | 60mm x 35mm                     |
+| Componente        | Dimensões Aproximadas      |
+| ----------------- | -------------------------- |
+| ESP32 DevKit V4   | 60mm x 30mm                |
+| Push Button       | 12mm x 12mm (botão padrão) |
+| Módulo Relé       | 50mm x 25mm                |
+| Display LCD       | 80mm x 36mm                |
+| Caixa Eletrônica  | 120mm x 90mm x 60mm        |
+| Eletroválvula 12V | 70mm x 55mm                |
+
 
 ---
 
 ## 📸 Foto do Protótipo Montado  
 
-![Protótipo](../imagens/foto_prototipo.png)
+![Protótipo](../imagens/foto_prototipo.png) ATUALIZAR IMAGEM AQUI 
 
 ---
 
