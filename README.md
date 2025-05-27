@@ -8,19 +8,26 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 
 - Monitora o tempo e o fluxo da água.
 - Exibe informações no display LCD.
+- Emite alerta aos 05 minutos
 - Desliga automaticamente após 10 minutos.
-- Permite controle remoto via MQTT (comandos ligar/desligar).
+- Permite controle remoto via MQTT (comandos abrir/fechar).
 - Publica dados de fluxo (L/min) e volume total (litros).
 
 ---
 
 ## 🧠 Tecnologias
 
-- NodeMCU ESP8266
-- Sensor de fluxo YF-S201
-- Display LCD 16x2 I2C
+- ESP32 DevKit V4
+
+- Display LCD 16x2 com interface I2C
+
 - Módulo Relé 5V + Eletroválvula 12V
-- MQTT (Broker Mosquitto ou HiveMQ)
+
+- Push Button (Botão de acionamento)
+
+- Protocolo MQTT (Broker público: tcp://broker.hivemq.com:1883)
+
+
 
 ---
 
