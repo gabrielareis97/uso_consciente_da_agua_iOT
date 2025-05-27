@@ -18,9 +18,13 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 ## 🧠 Tecnologias
 
 •  ESP32 DevKitC
+
 •  Módulo Relé 5V
+
 •  Display LCD 16x2 com Interface I2C
+
 •  LED interno do ESP32 (GPIO 2)
+
 • Protocolo MQTT (Broker público: tcp://broker.hivemq.com:1883)
 
 
@@ -52,13 +56,14 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 
 ## 🔧 Esquema de Montagem
 
-![Esquema de Montagem](imagens/esquema_fritzing.png)
+![Esquema de Montagem](https://github.com/user-attachments/assets/6aab9037-6aae-4d8e-978b-c449491be140)
 
 ---
 
 ## 🧰 Protótipo Montado
 
-![Protótipo Montado](imagens/foto_prototipo.png)
+![image](https://github.com/user-attachments/assets/894cf989-1092-4e54-a2c9-47785112cb92)
+
 
 ---
 
