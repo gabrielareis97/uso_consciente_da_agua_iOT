@@ -1,107 +1,95 @@
-⚙️ Pré-requisitos
-Placa NodeMCU ESP8266 (ou ESP32, se adaptado)
+## ⚙️ Pré-requisitos
 
-Sensor de fluxo de água YF-S201
+- Placa **ESP32 DevKit V4** (ou NodeMCU ESP8266, com adaptações)
+- **Módulo Relé 5V**
+- **Eletroválvula 12V**
+- **Display LCD 16x2 com módulo I2C** (opcional, mas recomendado)
+- **Fonte 12V DC** (para alimentação da válvula)
+- Jumpers e Protoboard (ou placa de circuito)
 
-Módulo Relé 5V
+---
 
-Eletroválvula 12V
+## 🛠️ Instalação das Dependências
 
-Display LCD 16x2 com módulo I2C (opcional, mas recomendado)
+1. **Baixe e instale a IDE Arduino:**  
+👉 [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software)
 
-Fonte 12V DC (para alimentação da válvula)
+2. **Adicione a placa ESP32 na IDE Arduino:**  
+- Vá em **Arquivo > Preferências**  
+- Em **URLs adicionais para gerenciadores de placas**, adicione:  
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
-Jumpers e Protoboard (ou placa de circuito)
+- Depois, vá em **Ferramentas > Placa > Gerenciador de Placas** e instale **esp32**.
 
-🛠️ Instalação das Dependências
-Baixe e instale a IDE Arduino:
-👉 https://www.arduino.cc/en/software
+3. **Instale as bibliotecas necessárias:**  
+No menu **Sketch > Incluir Biblioteca > Gerenciar Bibliotecas**, instale:  
+- `WiFi` (já vem com ESP32)  
+- `PubSubClient` (para comunicação MQTT)  
+- `Ticker` (para timers)  
+- `LiquidCrystal_I2C` (se usar display LCD)
 
-Adicione a placa NodeMCU ESP8266 na IDE Arduino:
+---
 
-Vá em Arquivo > Preferências
+## 🌐 Configuração de Rede e MQTT
 
-Em URLs adicionais para gerenciadores de placas, adicione:
+Abra o arquivo `sistema_agua.ino` e edite as seguintes linhas conforme sua rede Wi-Fi e broker MQTT:
 
-http://arduino.esp8266.com/stable/package_esp8266com_index.json
+```cpp
+const char* ssid = "SEU_SSID";           // Nome da sua rede Wi-Fi
+const char* password = "SUA_SENHA";      // Senha da sua rede Wi-Fi
+const char* mqtt_server = "broker.hivemq.com"; // Broker público MQTT
+🔗 Broker recomendado:
 
-Depois vá em Ferramentas > Placa > Gerenciador de Placas e instale esp8266.
+tcp://broker.hivemq.com:1883 (broker gratuito, sem autenticação)
 
-Instale as bibliotecas necessárias:
-No menu Sketch > Incluir Biblioteca > Gerenciar Bibliotecas, instale:
+🏠 Alternativas (opcional):
 
-ESP8266WiFi (ou ESP32WiFi se estiver usando ESP32)
+Local: Mosquitto (PC, Raspberry Pi)
 
-PubSubClient (para comunicação MQTT)
-
-LiquidCrystal_I2C (para exibir informações no LCD)
-
-🌐 Configuração de Rede e MQTT
-Abra o arquivo sistema_agua.ino e edite as seguintes linhas:
-
-const char* ssid = "SEU_SSID";            // Nome da sua rede Wi-Fi
-const char* password = "SUA_SENHA";       // Senha da sua rede Wi-Fi
-const char* mqtt_server = "BROKER_URL";   // Endereço do broker MQTT
-
-Utilize um broker MQTT. Você pode escolher:
-
-Local: usando Mosquitto em um PC ou Raspberry Pi.
-
-Nuvem: serviços gratuitos como:
-
-HiveMQ Cloud
-
-CloudMQTT
-
-Mosquitto Test Server
+Nuvem: HiveMQ, CloudMQTT, Mosquitto Test Server
 
 🔌 Montagem do Hardware
-Sensor de fluxo YF-S201 → GPIO4 (D2)
+Módulo Relé → GPIO2 (D4) → Aciona a Eletroválvula 12V
 
-Módulo Relé → GPIO2 (D4) → Aciona a eletroválvula de 12V
+Display LCD I2C (opcional) → Barramento I2C do ESP32 (SDA=21, SCL=22 no padrão)
 
-Display LCD I2C (opcional) → Barramento I2C do NodeMCU
+Fonte 12V DC → Alimenta a eletroválvula
 
-Fonte 12V DC → Alimenta a eletroválvula (o NodeMCU pode ser alimentado por USB)
+O ESP32 pode ser alimentado pela porta USB
 
 🖼️ O esquema elétrico está na pasta /docs no arquivo esquema_fritzing.png.
 
 🚀 Execução
-Faça upload do código sistema_agua.ino para o NodeMCU.
+Faça upload do código sistema_agua.ino para seu ESP32.
 
-Abra o Monitor Serial (baud rate: 115200) para acompanhar:
+Abra o Monitor Serial (baud rate: 115200) e acompanhe:
 
 Conexão ao Wi-Fi
 
 Conexão ao broker MQTT
 
-Leitura dos sensores
+Publicação dos dados de consumo e alertas
 
 Monitore os tópicos MQTT:
 
-agua/fluxo → vazão em L/min
+chuveiro/consumo → Publica o volume total consumido (em litros)
 
-agua/litros → volume total em litros
+chuveiro/alerta → Publica alertas de tempo (5 minutos e desligamento automático)
 
-Envie comandos no tópico agua/comando:
+Envie comandos no tópico chuveiro/comando:
 
-"ligar" → abre a válvula
+"ABRIR" → Abre a válvula (liga o chuveiro)
 
-"desligar" → fecha a válvula
+"FECHAR" → Fecha a válvula (desliga o chuveiro)
 
-O sistema desliga automaticamente a água após 10 minutos de uso contínuo, publicando também um alerta via MQTT.
+⏱️ O sistema desliga automaticamente após 10 minutos de uso contínuo e publica um alerta no tópico chuveiro/alerta.
 
 🧪 Testes Recomendados
-✅ Gire manualmente o sensor de fluxo (ou simule no Wokwi) e confira se a vazão e o volume são atualizados corretamente.
-
-✅ Verifique se, ao atingir 10 minutos de banho, o sistema fecha a válvula automaticamente.
-
+✅ Verifique se os dados de consumo estão sendo publicados corretamente a cada 10 segundos (+0.5 litros).
+✅ Confira se o alerta de 5 minutos é enviado corretamente.
+✅ Após 10 minutos, o sistema deve desligar automaticamente a válvula e enviar um alerta.
 ✅ Teste os comandos MQTT:
 
-Envie desligar → o relé aciona e corta a água.
+Envie "FECHAR" → o relé desliga a eletroválvula.
 
-Envie ligar → o relé libera novamente o fluxo.
-
-💡 Observações
-O sistema pode ser integrado a um dashboard MQTT (ex.: Node-RED, Grafana, Home Assistant) para visualização dos dados em tempo real.
-
+Envie "ABRIR" → o relé abre novamente a válvula.
