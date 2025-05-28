@@ -11,7 +11,6 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 | Componente                     | Função                                     | Observações                                             |
 |---------------------------------|--------------------------------------------|---------------------------------------------------------|
 | **ESP32 DevKit V4**             | Microcontrolador principal                 | Conexão Wi-Fi, controle do relé, botão e display LCD    |
-| **Push Button (Botão)**         | Entrada de comando manual                  | Conectado no pino GPIO  |
 | **Módulo Relé 5V**              | Acionamento da eletroválvula               | Conectado no pino GPIO 2                   |
 | **Eletroválvula 12V**           | Controla o fluxo de água                   | Abre/fecha a passagem da água (acionada via relé)      |
 | **Display LCD 16x2 (I2C)**      | Interface visual para exibir dados         | SDA (GPIO 21) e SCL (GPIO 22) – Endereço I2C: 0x27      |
@@ -29,11 +28,8 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 
 ## 🧩 Visão dos Componentes
 
-🟦 ESP32 DevKit V4 ADICIONAR AQUI IMAGEM 
 
-🔘 Push Button (Botão) ADICIONAR AQUI IMAGEM 
 
----
 
 ### ⚡ Módulo Relé 5V  
 ![Relé](../imagens/rele.png)
@@ -57,7 +53,6 @@ Este sistema é composto por um microcontrolador ESP32 DevKit V4, um módulo rel
 | Componente        | Dimensões Aproximadas      |
 | ----------------- | -------------------------- |
 | ESP32 DevKit V4   | 60mm x 30mm                |
-| Push Button       | 12mm x 12mm (botão padrão) |
 | Módulo Relé       | 50mm x 25mm                |
 | Display LCD       | 80mm x 36mm                |
 | Caixa Eletrônica  | 120mm x 90mm x 60mm        |
