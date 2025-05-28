@@ -56,13 +56,15 @@ Sistema inteligente para controle de consumo de água no chuveiro, baseado em Io
 
 ## 🔧 Esquema de Montagem
 
-![Esquema de Montagem](https://github.com/user-attachments/assets/6aab9037-6aae-4d8e-978b-c449491be140)
+![Esquema de Montagem](https://github.com/user-attachments/assets/6aaa3c25-3a19-4a77-a755-282b509a65b8)
+
 
 ---
 
 ## 🧰 Protótipo Montado
 
-![image](https://github.com/user-attachments/assets/894cf989-1092-4e54-a2c9-47785112cb92)
+![Protótipo Montado](https://github.com/user-attachments/assets/b55aa417-a97e-487b-8934-35ea3b7354bd)
+
 
 
 ---
